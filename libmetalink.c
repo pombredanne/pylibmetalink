@@ -12,12 +12,11 @@ PyDoc_STRVAR(cMetalink_init__doc__,
 static int8_t
 cMetalink_init(cMetalinkObject *self, PyObject *args)
 {
-	const char *metalinkFile;
 	metalink_error_t ret;
-	if (!PyArg_ParseTuple(args, "s:init",
-			  &metalinkFile))
+	if (!PyArg_ParseTuple(args, "O:init",
+			  &self->fp))
 		return -1;
-	ret = metalink_parse_file(metalinkFile, &self->metalink);
+	ret = metalink_parse_fp(PyFile_AsFile(self->fp), &self->metalink);
 
 	if(ret) {
 		fprintf(stderr, "ERROR: code=%d\n", ret);
