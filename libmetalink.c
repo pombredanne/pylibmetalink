@@ -73,9 +73,10 @@ cMetalinkObject_new(PyTypeObject *type, __attribute__((unused)) PyObject *args, 
 static void
 cMetalink_dealloc(cMetalinkObject *self)
 {
+	Py_XDECREF(self->files);
+
 	if(self->metalink)
 		delete_metalink(self->metalink);
-
 
 	self->ob_type->tp_free((PyObject*)self);
 }
