@@ -47,6 +47,28 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 			PyDict_SetItem(fileDict, PyString_FromString("checksums"),
 					checksumDict);
 	      	}
+	      	if((*file)->chunk_checksum) {
+		    	metalink_piece_hash_t** piece_hashes;
+			PyObject *chunk_checksumDict = PyDict_New();
+			PyObject *piece_hashList = PyList_New(0);
+
+			PyDict_SetItem(chunk_checksumDict, PyString_FromString("size"),
+					PyInt_FromLong((*file)->chunk_checksum->length));
+			PyDict_SetItem(chunk_checksumDict, PyString_FromString("type"),
+					PyString_FromString((*file)->chunk_checksum->type));
+
+		    	piece_hashes = (*file)->chunk_checksum->piece_hashes;
+		    	while(*piece_hashes) {
+				PyObject *piece_hashTuple = Py_BuildValue("(is)", (*piece_hashes)->piece, (*piece_hashes)->hash);
+				PyList_Append(piece_hashList, piece_hashTuple);
+			  	++piece_hashes;
+		    	}
+			PyDict_SetItem(chunk_checksumDict, PyString_FromString("piece_hashes"),
+					piece_hashList);
+			PyDict_SetItem(fileDict, PyString_FromString("chunk_checksum"),
+					chunk_checksumDict);
+		}
+
 
 
 		PyList_Append(self->files, fileDict);
