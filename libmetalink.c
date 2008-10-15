@@ -1,7 +1,5 @@
 #include "libmetalink.h"
 
-#include <metalink/metalink_parser.h>
-
 static const char __author__[] =
 "The libmetalink python module was written by:\n\
 \n\
@@ -47,6 +45,9 @@ static PyMethodDef cMetalinkObject_methods[] = {
 static void
 cMetalink_dealloc(cMetalinkObject *self)
 {
+	if(self->metalink != NULL)
+		metalink_free(self->metalink);
+
 	self->ob_type->tp_free((PyObject*)self);
 }
 
