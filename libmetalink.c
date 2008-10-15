@@ -68,6 +68,26 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 			PyDict_SetItem(fileDict, PyString_FromString("chunk_checksum"),
 					chunk_checksumDict);
 		}
+		if((*file)->resources) {
+			metalink_resource_t** resources;
+			PyObject *resourceList = PyList_New(0);
+			resources = (*file)->resources;
+			while(*resources) {
+				PyObject *resourceDict = PyDict_New();
+				PyDict_SetItem(resourceDict, PyString_FromString("type"),
+						PyString_FromString((*resources)->type));
+				PyDict_SetItem(resourceDict, PyString_FromString("location"),
+						PyString_FromString((*resources)->location));
+				PyDict_SetItem(resourceDict, PyString_FromString("preference"),
+						PyInt_FromLong((*resources)->preference));
+				PyDict_SetItem(resourceDict, PyString_FromString("url"),
+						PyString_FromString((*resources)->url));
+				PyList_Append(resourceList, resourceDict);
+				++resources;
+			}
+			PyDict_SetItem(fileDict, PyString_FromString("resources"),
+					resourceList);
+		}
 
 
 
