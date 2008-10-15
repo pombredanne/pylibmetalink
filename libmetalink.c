@@ -74,14 +74,18 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 			resources = (*file)->resources;
 			while(*resources) {
 				PyObject *resourceDict = PyDict_New();
-				PyDict_SetItem(resourceDict, PyString_FromString("type"),
-						PyString_FromString((*resources)->type));
-				PyDict_SetItem(resourceDict, PyString_FromString("location"),
-						PyString_FromString((*resources)->location));
-				PyDict_SetItem(resourceDict, PyString_FromString("preference"),
-						PyInt_FromLong((*resources)->preference));
-				PyDict_SetItem(resourceDict, PyString_FromString("url"),
-						PyString_FromString((*resources)->url));
+				if((*resources)->type)
+					PyDict_SetItem(resourceDict, PyString_FromString("type"),
+							PyString_FromString((*resources)->type));
+				if((*resources)->location)
+					PyDict_SetItem(resourceDict, PyString_FromString("location"),
+							PyString_FromString((*resources)->location));
+				if((*resources)->preference)
+					PyDict_SetItem(resourceDict, PyString_FromString("preference"),
+							PyInt_FromLong((*resources)->preference));
+				if((*resources)->url)
+					PyDict_SetItem(resourceDict, PyString_FromString("url"),
+							PyString_FromString((*resources)->url));
 				PyList_Append(resourceList, resourceDict);
 				++resources;
 			}
