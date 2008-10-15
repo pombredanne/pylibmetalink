@@ -12,6 +12,27 @@ PyDoc_STRVAR(cMetalink_init__doc__,
 static int8_t
 cMetalink_init(cMetalinkObject *self, PyObject *args)
 {
+	const char *metalinkFile;
+	int ret;
+	if (!PyArg_ParseTuple(args, "s:init",
+			  &metalinkFile))
+		return -1;
+	ret = metalink_parse_file(metalinkFile, &self->metalink);
+
+	if(ret) {
+		fprintf(stderr, "ERROR: code=%d\n", ret);
+		exit(EXIT_FAILURE);
+	}
+
+	self->files = PyList_New(NULL);
+ 	metalink_file_t** file = self->metalink->files;
+
+	while(*file) {
+		PyList_Append(self->files, PyString_FromString((*file)->name));
+		++file;
+	}
+
+	return 0;	
 }
 
 
@@ -28,28 +49,26 @@ cMetalinkObject_new(PyTypeObject *type, __attribute__((unused)) PyObject *args, 
     return (PyObject *)self;
 }
 
-PyDoc_STRVAR(cMetalink_parse__doc__,
-"");
-static PyObject*
-cMetalink_parse(cMetalinkObject *self, PyObject *args)
-{
-}
-
-static PyMethodDef cMetalinkObject_methods[] = {
-    	{"parse", (PyCFunction)cMetalink_parse, METH_VARARGS | METH_KEYWORDS,
-		cMetalink_parse__doc__},
-	
-	{0, 0, 0, 0}
-};
-
 static void
 cMetalink_dealloc(cMetalinkObject *self)
 {
-	if(self->metalink != NULL)
-		metalink_free(self->metalink);
+//	if(self->metalink != NULL)
+//		metalink_free(self->metalink);
 
 	self->ob_type->tp_free((PyObject*)self);
 }
+
+static PyObject *
+cMetalink_get_files(cMetalinkObject *self, __attribute__((unused))void *closure)
+{
+	return self->files;
+}
+
+static PyGetSetDef cMetalink_getset[] = {
+	{"files", (getter)cMetalink_get_files, NULL,
+			"List of files in metalink", NULL},
+	{NULL, NULL, NULL, NULL, NULL}	/* Sentinel */
+};
 
 PyTypeObject cMetalink_Type = {
 	PyObject_HEAD_INIT(NULL)
@@ -69,20 +88,20 @@ PyTypeObject cMetalink_Type = {
 	0,						/*tp_hash*/
 	0,						/*tp_call*/
 	0,						/*tp_str*/
-	0,						/*tp_getattro*/
-	0,						/*tp_setattro*/
+	PyObject_GenericGetAttr,			/*tp_getattro*/
+	PyObject_GenericSetAttr,			/*tp_setattro*/
 	0,						/*tp_as_buffer*/
 	Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,		/*tp_flags*/
-	cMetalink_init__doc__,         		/*tp_doc*/
+	cMetalink_init__doc__,         			/*tp_doc*/
 	0,						/*tp_traverse*/
 	0,						/*tp_clear*/
 	0,						/*tp_richcompare*/
 	0,						/*tp_weaklistoffset*/
 	0,						/*tp_iter*/
 	0,						/*tp_iternext*/
-	cMetalinkObject_methods,			/*tp_methods*/
+	0,						/*tp_methods*/
 	0,						/*tp_members*/
-	0,						/*tp_getset*/
+	cMetalink_getset,				/*tp_getset*/
 	0,						/*tp_base*/
 	0,						/*tp_dict*/
 	0,						/*tp_descr_get*/
@@ -101,24 +120,24 @@ PyTypeObject cMetalink_Type = {
 	0						/*tp_del*/
 };
 
-static PyMethodDef cmetalink_methods[] = {
+static PyMethodDef cMetalink_methods[] = {
 	{0, 0, 0, 0}
 };
 
-PyDoc_STRVAR(cmetalink_module_documentation,
+PyDoc_STRVAR(cMetalink_module_documentation,
 "The python cMetalink module provides an interface for the libmetalink\n\
 library.");
 
 /* declare function before defining it to avoid compile warnings */
-PyMODINIT_FUNC initcmetalink(void);
+PyMODINIT_FUNC initcMetalink(void);
 PyMODINIT_FUNC
-initcmetalink(void)
+initcMetalink(void)
 {
     PyObject *m;
     if (PyType_Ready(&cMetalink_Type) < 0)
  	    return;
-    m = Py_InitModule3("cMetalink", cmetalink_methods,
-		       cmetalink_module_documentation);
+    m = Py_InitModule3("cMetalink", cMetalink_methods,
+		       cMetalink_module_documentation);
     if (m == NULL)
 		return;
     shortException = PyErr_NewException("metalink.ShortException", NULL, NULL);

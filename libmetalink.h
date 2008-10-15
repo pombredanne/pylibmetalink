@@ -8,7 +8,8 @@
 typedef struct
 {
 	PyObject_HEAD
-	metalink_t* metalink;
+	PyObject *files;
+	metalink_t *metalink;
 } cMetalinkObject;
 
 PyObject *shortException, *unknownException;
