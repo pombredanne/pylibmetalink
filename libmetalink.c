@@ -13,7 +13,7 @@ static int8_t
 cMetalink_init(cMetalinkObject *self, PyObject *args)
 {
 	const char *metalinkFile;
-	int ret;
+	metalink_error_t ret;
 	if (!PyArg_ParseTuple(args, "s:init",
 			  &metalinkFile))
 		return -1;
