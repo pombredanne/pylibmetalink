@@ -24,11 +24,32 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 		exit(EXIT_FAILURE);
 	}
 
-	self->files = PyList_New(NULL);
+	self->files = PyList_New(0);
  	metalink_file_t** file = self->metalink->files;
 
 	while(*file) {
-		PyList_Append(self->files, PyString_FromString((*file)->name));
+		PyObject *fileDict = PyDict_New();
+		PyDict_SetItem(fileDict, PyString_FromString("filename"),
+				PyString_FromString((*file)->name));
+
+		PyDict_SetItem(fileDict, PyString_FromString("size"),
+				PyInt_FromLong((*file)->size));
+		PyDict_SetItem(fileDict, PyString_FromString("os"),
+				PyString_FromString((*file)->os));
+	      	if((*file)->checksums) {
+			PyObject *checksumDict = PyDict_New();
+			metalink_checksum_t** checksums = (*file)->checksums;
+		    	while(*checksums) {
+				PyDict_SetItem(checksumDict, PyString_FromString((*checksums)->type),
+					 PyString_FromString((*checksums)->hash));
+			  	++checksums;
+		    	}
+			PyDict_SetItem(fileDict, PyString_FromString("checksums"),
+					checksumDict);
+	      	}
+
+
+		PyList_Append(self->files, fileDict);
 		++file;
 	}
 
