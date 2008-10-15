@@ -24,7 +24,7 @@ compile_args = []
 warnflags = ['-Wall', '-Wextra']
 compile_args.extend(warnflags)
 link_args = ['-lmetalink']
-extens=[Extension('libmetalink', c_files, extra_compile_args=compile_args, extra_link_args=link_args, define_macros=version_define)]
+extens=[Extension('cMetalink', c_files, extra_compile_args=compile_args, extra_link_args=link_args, define_macros=version_define)]
 
 setup(
     name = "pylibmetalink",
