@@ -35,6 +35,7 @@ PyDoc_STRVAR(cMetalink_parse__doc__,
 static PyObject*
 cMetalink_parse(cMetalinkObject *self, PyObject *args)
 {
+}
 
 static PyMethodDef cMetalinkObject_methods[] = {
     	{"parse", (PyCFunction)cMetalink_parse, METH_VARARGS | METH_KEYWORDS,
@@ -108,7 +109,7 @@ PyDoc_STRVAR(cmetalink_module_documentation,
 library.");
 
 /* declare function before defining it to avoid compile warnings */
-//PyMODINIT_FUNC initcmetalink(void);
+PyMODINIT_FUNC initcmetalink(void);
 PyMODINIT_FUNC
 initcmetalink(void)
 {
