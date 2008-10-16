@@ -8,8 +8,8 @@
 typedef struct
 {
 	PyObject_HEAD
-	PyObject *fp;	
 	PyObject *files;
+	PyObject *arg;
 	metalink_t *metalink;
 } cMetalinkObject;
 
