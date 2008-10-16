@@ -52,9 +52,14 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 	}
 
 	self->files = PyList_New(0);
-	if(!arg)
-		return 0;
+	if(arg)
+		cMetalink_createPyObject(self, NULL);
+	
+	return 0;
+}
 
+static uint8_t
+cMetalink_createPyObject(cMetalinkObject *self, __attribute__((unused)) PyObject *args){
 	metalink_file_t** file = self->metalink->files;
 
 	while(*file) {
@@ -125,10 +130,8 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 		PyList_Append(self->files, fileDict);
 		++file;
 	}
-
 	return 0;
 }
-
 
 static PyObject *
 cMetalinkObject_new(PyTypeObject *type, __attribute__((unused)) PyObject *args, __attribute__((unused)) PyObject *kwargs)

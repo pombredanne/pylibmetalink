@@ -15,4 +15,6 @@ typedef struct
 
 PyObject *libmetalinkException;
 
+static uint8_t cMetalink_createPyObject(cMetalinkObject *self, __attribute__((unused)) PyObject *args);
+
 #endif /* LIBMETALINK_H */
