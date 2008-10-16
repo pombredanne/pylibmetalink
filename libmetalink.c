@@ -12,12 +12,14 @@ The arg argument must be either a file, string or read-only buffer\n");
 static int8_t
 cMetalink_init(cMetalinkObject *self, PyObject *args)
 {
-	metalink_error_t ret;
-	PyObject *arg;
-	if (!PyArg_ParseTuple(args, "O:metalink", &arg))
+	metalink_error_t ret = 0;
+	PyObject *arg = NULL;
+	if (!PyArg_ParseTuple(args, "|O:metalink", &arg))
 		return -1;
 
-	if(PyFile_Check(arg))
+	if(!arg)
+		self->metalink =new_metalink(); 
+	else if(PyFile_Check(arg))
 	{
 		if(PyFile_AsFile(arg))
 			ret = metalink_parse_fp(PyFile_AsFile(arg), &self->metalink);
@@ -36,7 +38,7 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 	else
 	{
 		PyErr_Format(PyExc_TypeError, "%s constructor argument must be either a file,"
-				"string or read-only buffer, not %s",
+				"stringn read-only buffer or unspecified, not %s",
 				((PyTypeObject*)PyObject_Type((PyObject*)self))->tp_name,
 				((PyTypeObject*)PyObject_Type(arg))->tp_name);
 		return -1;
@@ -50,6 +52,9 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 	}
 
 	self->files = PyList_New(0);
+	if(!arg)
+		return 0;
+
 	metalink_file_t** file = self->metalink->files;
 
 	while(*file) {
@@ -217,8 +222,8 @@ static PyMethodDef cMetalink_methods[] = {
 };
 
 PyDoc_STRVAR(cMetalink_module_documentation,
-		"The python cMetalink module provides an interface for the libmetalink\n\
-		library.");
+"The python cMetalink module provides an interface for the libmetalink\n\
+library.");
 
 /* declare function before defining it to avoid compile warnings */
 PyMODINIT_FUNC initcMetalink(void);
