@@ -16,9 +16,12 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 	PyObject *arg = NULL;
 	if (!PyArg_ParseTuple(args, "|O:metalink", &arg))
 		return -1;
+	self->identity = Py_None;
 
 	if(!arg)
-		self->metalink =new_metalink(); 
+	{
+		self->metalink =new_metalink();
+	}
 	else if(PyFile_Check(arg))
 	{
 		if(PyFile_AsFile(arg))
@@ -61,6 +64,8 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 static uint8_t
 cMetalink_createPyObject(cMetalinkObject *self, __attribute__((unused)) PyObject *args){
 	metalink_file_t** file = self->metalink->files;
+	if(self->metalink->identity)
+		self->identity =  PyString_FromString(self->metalink->identity);
 
 	while(*file) {
 		PyObject *fileDict = PyDict_New();
@@ -164,13 +169,21 @@ cMetalink_get_files(cMetalinkObject *self, __attribute__((unused))void *closure)
 	return self->files;
 }
 
+static PyObject *
+cMetalink_get_identity(cMetalinkObject *self, __attribute__((unused))void *closure)
+{
+	return self->identity;
+}
+
 static PyGetSetDef cMetalink_getset[] = {
 	{"files", (getter)cMetalink_get_files, NULL,
 		"List of files in metalink", NULL},
+	{"identity", (getter)cMetalink_get_identity, NULL,
+		"Metalink identity", NULL},
 	{NULL, NULL, NULL, NULL, NULL}	/* Sentinel */
 };
 
-	PyTypeObject cMetalink_Type = {
+PyTypeObject cMetalink_Type = {
 		PyObject_HEAD_INIT(NULL)
 		0,						/*ob_size*/
 		"cMetalink.metalink",				/*tp_name*/
