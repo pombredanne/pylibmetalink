@@ -118,6 +118,7 @@ static void
 cMetalink_dealloc(cMetalinkObject *self)
 {
 	Py_XDECREF(self->files);
+	Py_XDECREF(self->fp);
 
 	if(self->metalink)
 		delete_metalink(self->metalink);
