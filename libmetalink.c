@@ -161,13 +161,13 @@ cMetalink_dealloc(cMetalinkObject *self)
 }
 
 static PyObject *
-cMetalink_get_files(cMetalinkObject *self, __attribute__((unused))void *closure)
+cMetalink_get_files(cMetalinkObject *self)
 {
 	return self->files;
 }
 
 static PyObject *
-cMetalink_get_identity(cMetalinkObject *self, __attribute__((unused))void *closure)
+cMetalink_get_identity(cMetalinkObject *self)
 {
 	if(self->metalink->identity)
 		return PyString_FromString(self->metalink->identity);
