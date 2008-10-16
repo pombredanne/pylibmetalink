@@ -152,7 +152,6 @@ static void
 cMetalink_dealloc(cMetalinkObject *self)
 {
 	Py_XDECREF(self->files);
-	Py_XDECREF(self->arg);
 
 	if(self->metalink)
 		delete_metalink(self->metalink);
@@ -179,7 +178,7 @@ cMetalink_set_identity(cMetalinkObject *self, PyObject *value)
 {
 	metalink_error_t r = metalink_set_identity(self->metalink,
 			PyString_AsString(value));
-	return r ? 0 : -1;
+	return r ? -1 : 0;
 }
 
 static PyGetSetDef cMetalink_getset[] = {
