@@ -16,7 +16,6 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 	PyObject *arg = NULL;
 	if (!PyArg_ParseTuple(args, "|O:metalink", &arg))
 		return -1;
-	self->identity = Py_None;
 
 	if(!arg)
 	{
@@ -64,8 +63,6 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 static uint8_t
 cMetalink_createPyObject(cMetalinkObject *self, __attribute__((unused)) PyObject *args){
 	metalink_file_t** file = self->metalink->files;
-	if(self->metalink->identity)
-		self->identity =  PyString_FromString(self->metalink->identity);
 
 	while(*file) {
 		PyObject *fileDict = PyDict_New();
@@ -172,7 +169,9 @@ cMetalink_get_files(cMetalinkObject *self, __attribute__((unused))void *closure)
 static PyObject *
 cMetalink_get_identity(cMetalinkObject *self, __attribute__((unused))void *closure)
 {
-	return self->identity;
+	if(self->metalink->identity)
+		return PyString_FromString(self->metalink->identity);
+	return Py_None;
 }
 
 static PyGetSetDef cMetalink_getset[] = {

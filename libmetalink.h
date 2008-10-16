@@ -9,7 +9,6 @@ typedef struct
 {
 	PyObject_HEAD
 	PyObject *files;
-	PyObject *identity;
 	PyObject *arg;
 	metalink_t *metalink;
 } cMetalinkObject;
