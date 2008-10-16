@@ -6,9 +6,10 @@ static const char __author__[] =
 Per Øyvind Karlsen <peroyvind@mandriva.org>\n";
 
 PyDoc_STRVAR(cMetalink_init__doc__,
-		"");
+"metalink(arg) -- Initializes a metalink object.\n\
+The arg argument must be either a file, string or read-only buffer\n");
 
-	static int8_t
+static int8_t
 cMetalink_init(cMetalinkObject *self, PyObject *args)
 {
 	metalink_error_t ret;
@@ -124,7 +125,7 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 }
 
 
-	static PyObject *
+static PyObject *
 cMetalinkObject_new(PyTypeObject *type, __attribute__((unused)) PyObject *args, __attribute__((unused)) PyObject *kwargs)
 {
 	cMetalinkObject *self;
@@ -137,7 +138,7 @@ cMetalinkObject_new(PyTypeObject *type, __attribute__((unused)) PyObject *args, 
 	return (PyObject *)self;
 }
 
-	static void
+static void
 cMetalink_dealloc(cMetalinkObject *self)
 {
 	Py_XDECREF(self->files);
@@ -149,7 +150,7 @@ cMetalink_dealloc(cMetalinkObject *self)
 	self->ob_type->tp_free((PyObject*)self);
 }
 
-	static PyObject *
+static PyObject *
 cMetalink_get_files(cMetalinkObject *self, __attribute__((unused))void *closure)
 {
 	return self->files;
@@ -163,7 +164,7 @@ static PyGetSetDef cMetalink_getset[] = {
 
 	PyTypeObject cMetalink_Type = {
 		PyObject_HEAD_INIT(NULL)
-			0,						/*ob_size*/
+		0,						/*ob_size*/
 		"cMetalink.metalink",				/*tp_name*/
 		sizeof(cMetalinkObject),			/*tp_basicsize*/
 		0,						/*tp_itemsize*/
@@ -221,7 +222,7 @@ PyDoc_STRVAR(cMetalink_module_documentation,
 
 /* declare function before defining it to avoid compile warnings */
 PyMODINIT_FUNC initcMetalink(void);
-	PyMODINIT_FUNC
+PyMODINIT_FUNC
 initcMetalink(void)
 {
 	PyObject *m;
