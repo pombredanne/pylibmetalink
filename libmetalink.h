@@ -13,6 +13,6 @@ typedef struct
 	metalink_t *metalink;
 } cMetalinkObject;
 
-PyObject *shortException, *unknownException;
+PyObject *libmetalinkException;
 
 #endif /* LIBMETALINK_H */

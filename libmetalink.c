@@ -19,8 +19,9 @@ cMetalink_init(cMetalinkObject *self, PyObject *args)
 	ret = metalink_parse_fp(PyFile_AsFile(self->fp), &self->metalink);
 
 	if(ret) {
-		fprintf(stderr, "ERROR: code=%d\n", ret);
-		exit(EXIT_FAILURE);
+		PyErr_Format(libmetalinkException, "Error %d returned from libmetalink "
+				"trying to parse document.", ret);
+		return -1;
 	}
 
 	self->files = PyList_New(0);
@@ -208,16 +209,10 @@ initcMetalink(void)
 		       cMetalink_module_documentation);
     if (m == NULL)
 		return;
-    shortException = PyErr_NewException("metalink.ShortException", NULL, NULL);
-    if (shortException != NULL) {
-        Py_INCREF(shortException);
-		PyModule_AddObject(m, "ShortException", shortException);
-    }
-
-    unknownException = PyErr_NewException("metalink.UnknownException", NULL, NULL);
-    if (unknownException != NULL) {
-        Py_INCREF(unknownException);
-		PyModule_AddObject(m, "UnknownException", unknownException);
+    libmetalinkException = PyErr_NewException("cMetalink.Error", NULL, NULL);
+    if (libmetalinkException != NULL) {
+        Py_INCREF(libmetalinkException);
+		PyModule_AddObject(m, "Error", libmetalinkException);
     }
 
     Py_INCREF(&cMetalink_Type);
