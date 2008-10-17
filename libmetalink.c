@@ -181,11 +181,29 @@ cMetalink_set_identity(cMetalinkObject *self, PyObject *value)
 	return r ? -1 : 0;
 }
 
+static PyObject *
+cMetalink_get_tags(cMetalinkObject *self)
+{
+	if(self->metalink->tags)
+		return PyString_FromString(self->metalink->tags);
+	return Py_None;
+}
+
+static int8_t
+cMetalink_set_tags(cMetalinkObject *self, PyObject *value)
+{
+	metalink_error_t r = metalink_set_tags(self->metalink,
+			PyString_AsString(value));
+	return r ? -1 : 0;
+}
+
 static PyGetSetDef cMetalink_getset[] = {
 	{"files", (getter)cMetalink_get_files, NULL,
 		"List of files in metalink", NULL},
 	{"identity", (getter)cMetalink_get_identity, (setter)cMetalink_set_identity,
 		"Metalink identity", NULL},
+	{"tags", (getter)cMetalink_get_tags, (setter)cMetalink_set_tags,
+		"Metalink tags", NULL},
 	{NULL, NULL, NULL, NULL, NULL}	/* Sentinel */
 };
 
